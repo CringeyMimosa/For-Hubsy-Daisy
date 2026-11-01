@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Dearest Aisy ♡</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- html2pdf Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDFBF7',
+                        blush: {
+                            50: '#FFF5F5',
+                            100: '#FED7D7',
+                            200: '#FBB6CE',
+                            300: '#F687B3',
+                            400: '#ED64A6',
+                            500: '#E25582',
+                        },
+                        warmGold: '#D4AF37',
+                        softBeige: '#F4EBE1',
+                        roseAccent: '#C86D7B',
+                        deepRose: '#8B3A4B'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                        romantic: ['Dancing Script', 'cursive'],
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
+                        'sparkle': 'sparkle 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' },
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '0.9', transform: 'scale(1)' },
+                            '50%': { opacity: '1', transform: 'scale(1.03)' },
+                        },
+                        sparkle: {
+                            '0%, 100%': { opacity: '0.3', transform: 'scale(0.8)' },
+                            '50%': { opacity: '1', transform: 'scale(1.2)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Scrollbar */
+        body {
+            background-color: #FDFBF7;
+            color: #4A3E3D;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8D3C5;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C86D7B;
+        }
+
+        /* Floating Hearts Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Glassmorphic Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 235, 225, 0.8);
+            box-shadow: 0 10px 30px -5px rgba(200, 109, 123, 0.08);
+        }
+
+        .glass-card-hover {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px -10px rgba(200, 109, 123, 0.18);
+            border-color: rgba(226, 85, 130, 0.3);
+        }
+
+        /* Interactive Envelope Animation */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: #F4EBE1;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(139, 58, 75, 0.15);
+            cursor: pointer;
+            transition: transform 0.6s ease;
+        }
+
+        @media (min-width: 640px) {
+            .envelope {
+                width: 380px;
+                height: 240px;
+            }
+        }
+
+        .envelope:hover {
+            transform: translateY(-8px) rotate(-1deg);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #E8D3C5;
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 3;
+        }
+
+        @media (min-width: 640px) {
+            .envelope-flap {
+                border-left-width: 190px;
+                border-right-width: 190px;
+                border-top-width: 130px;
+            }
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope-pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0;
+            border-left: 150px solid #F8EDE3;
+            border-right: 150px solid #F8EDE3;
+            border-bottom: 120px solid #E2C2B3;
+            border-radius: 0 0 12px 12px;
+            z-index: 2;
+        }
+
+        @media (min-width: 640px) {
+            .envelope-pocket {
+                border-left-width: 190px;
+                border-right-width: 190px;
+                border-bottom-width: 140px;
+            }
+        }
+
+        .letter-preview {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 88%;
+            height: 140px;
+            background: #FFF;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.6s ease;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .envelope.open .letter-preview {
+            transform: translate(-50%, -60px);
+        }
+
+        /* Wax Seal */
+        .wax-seal {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 52px;
+            height: 52px;
+            background: radial-gradient(circle, #C86D7B 0%, #8B3A4B 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFF;
+            box-shadow: 0 4px 10px rgba(139, 58, 75, 0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+            z-index: 4;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        @media (min-width: 640px) {
+            .wax-seal {
+                top: 105px;
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .envelope.open .wax-seal {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+
+        /* Letter Modal Overlay Animation */
+        #letterModal {
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #letterModal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        #letterModal.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        .modal-content {
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Custom Audio Button Pulse */
+        .sound-wave-bar {
+            animation: soundWave 1.2s ease-in-out infinite alternate;
+        }
+        .sound-wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .sound-wave-bar:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes soundWave {
+            0% { height: 4px; }
+            100% { height: 16px; }
+        }
+
+        /* Gradient Background */
+        .bg-gradient-romantic {
+            background: linear-gradient(135deg, #FFF8F6 0%, #F4EBE1 50%, #FFEFEF 100%);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-cream">
+
+    <!-- Canvas for Floating Hearts & Ambient Particles -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Top Ambient Sound & Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-40 px-4 py-3 sm:px-8 sm:py-4 flex justify-between items-center bg-cream/70 backdrop-blur-md border-b border-blush-100/50">
+        <div class="flex items-center space-x-2">
+            <span class="font-romantic text-2xl sm:text-3xl font-bold text-roseAccent">Hani & Aisy</span>
+            <span class="inline-block w-2 h-2 rounded-full bg-roseAccent/60 animate-ping"></span>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <!-- Audio Toggle Button -->
+            <button id="audioToggle" onclick="toggleMusic()" class="flex items-center space-x-2 px-3 py-1.5 rounded-full glass-card hover:bg-white text-xs sm:text-sm font-medium text-roseAccent transition-all border border-blush-200 shadow-sm">
+                <i data-lucide="music" class="w-4 h-4 text-roseAccent"></i>
+                <span id="audioStatus">Play Music</span>
+                <div id="soundWave" class="hidden flex items-center space-x-0.5 h-4 ml-1">
+                    <span class="sound-wave-bar w-0.5 bg-roseAccent rounded-full"></span>
+                    <span class="sound-wave-bar w-0.5 bg-roseAccent rounded-full"></span>
+                    <span class="sound-wave-bar w-0.5 bg-roseAccent rounded-full"></span>
+                </div>
+            </button>
+            
+            <!-- Quick Letter Jump -->
+            <button onclick="openLetterModal()" class="px-3 py-1.5 rounded-full bg-roseAccent text-white hover:bg-deepRose text-xs sm:text-sm font-medium transition-all shadow-md hover:shadow-lg flex items-center space-x-1.5">
+                <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                <span>Read Letter</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="min-h-screen pt-28 pb-16 px-4 flex flex-col justify-center items-center text-center relative overflow-hidden bg-gradient-romantic">
+        <!-- Soft Background Glow Circles -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[550px] h-[350px] sm:h-[550px] bg-blush-200/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-72 h-72 bg-softBeige/60 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto z-10 space-y-6">
+            <!-- Cute Badge -->
+            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/80 border border-blush-200 text-roseAccent text-xs sm:text-sm font-medium shadow-sm animate-pulse-soft">
+                <i data-lucide="sparkles" class="w-4 h-4 text-warmGold"></i>
+                <span>Celebrating My Beloved Husband</span>
+                <i data-lucide="heart" class="w-3.5 h-3.5 fill-roseAccent text-roseAccent"></i>
+            </div>
+
+            <!-- Title -->
+            <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-normal tracking-tight text-gray-800 leading-tight">
+                Happy Birthday,
+                <span class="font-romantic text-roseAccent text-5xl sm:text-7xl md:text-8xl italic block mt-1">My Dearest Aisy</span>
+            </h1>
+
+            <p class="font-handwriting text-2xl sm:text-3xl text-gray-600 max-w-xl mx-auto leading-relaxed">
+                "A million times over, I’d still choose you. Always."
+            </p>
+
+            <!-- Interactive Envelope Display -->
+            <div class="pt-6 pb-4 flex flex-col items-center justify-center">
+                <div class="envelope-wrapper mb-3">
+                    <div id="heroEnvelope" class="envelope" onclick="openLetterModal()">
+                        <div class="envelope-flap"></div>
+                        <div class="envelope-pocket"></div>
+                        <div class="wax-seal">
+                            <i data-lucide="heart" class="w-6 h-6 fill-white"></i>
+                        </div>
+                        <div class="letter-preview flex flex-col items-center justify-center text-center">
+                            <span class="font-romantic text-roseAccent text-xl">dear aisy...</span>
+                            <p class="font-serif text-xs text-gray-500 italic mt-1 line-clamp-2">"to my loveliest and strongest husband, happy birthday! may you always be blessed..."</p>
+                            <span class="mt-2 text-[10px] uppercase tracking-wider text-warmGold font-semibold">Click to open letter ♡</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 font-medium tracking-wide flex items-center space-x-1">
+                    <i data-lucide="pointer" class="w-3.5 h-3.5 text-roseAccent"></i>
+                    <span>Tap the wax seal to read your birthday letter</span>
+                </p>
+            </div>
+
+            <!-- Love Counter Card -->
+            <div class="pt-4 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 max-w-lg mx-auto">
+                <div class="glass-card rounded-2xl p-4 text-center">
+                    <div class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-1">Status</div>
+                    <div class="font-serif text-lg sm:text-xl font-bold text-deepRose">First Birthday</div>
+                    <div class="text-[11px] text-gray-500 mt-0.5">As Husband & Wife ♡</div>
+                </div>
+                <div class="glass-card rounded-2xl p-4 text-center">
+                    <div class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-1">My Love For You</div>
+                    <div class="font-handwriting text-2xl sm:text-3xl font-bold text-roseAccent">Infinite</div>
+                    <div class="text-[11px] text-gray-500 mt-0.5">And growing every day</div>
+                </div>
+                <div class="glass-card rounded-2xl p-4 text-center col-span-2 sm:col-span-1">
+                    <div class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-1">Choice</div>
+                    <div class="font-serif text-lg sm:text-xl font-bold text-warmGold">1,000,000x</div>
+                    <div class="text-[11px] text-gray-500 mt-0.5">I'd choose you again</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-1 text-gray-400">
+            <span class="text-[11px] tracking-widest uppercase font-medium">Scroll down for your surprises</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 animate-bounce text-roseAccent"></i>
+        </div>
+    </section>
+
+    <!-- SECTION 1: OUR JOURNEY & MILESTONES -->
+    <section class="py-20 px-4 sm:px-6 max-w-5xl mx-auto">
+        <div class="text-center space-y-3 mb-14">
+            <div class="inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest text-roseAccent font-semibold bg-blush-100/60 px-3 py-1 rounded-full">
+                <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+                <span>Our Chapter Together</span>
+            </div>
+            <h2 class="font-serif text-3xl sm:text-4xl font-semibold text-gray-800">The Beauty of Our Story</h2>
+            <p class="font-handwriting text-2xl text-gray-600 max-w-lg mx-auto">"Through every up and down, we keep choosing each other."</p>
+        </div>
+
+        <!-- Interactive Journey Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 glass-card-hover relative overflow-hidden group">
+                <div class="w-12 h-12 rounded-2xl bg-blush-100 flex items-center justify-center text-roseAccent mb-5 group-hover:scale-110 transition-transform">
+                    <i data-lucide="cake" class="w-6 h-6"></i>
+                </div>
+                <span class="text-xs font-semibold text-warmGold uppercase tracking-wider">Milestone 01</span>
+                <h3 class="font-serif text-xl sm:text-2xl font-semibold text-gray-800 mt-1 mb-3">Our First Married Birthday</h3>
+                <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    Celebrating this special day beside you, now as your wife, is a dream come true. With every little moment spent together today, my heart is overflowing with happiness just to be by your side.
+                </p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-roseAccent font-medium">
+                    <span>Wrapped in love</span>
+                    <i data-lucide="heart" class="w-4 h-4 fill-roseAccent"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 sm:p-8 glass-card-hover relative overflow-hidden group">
+                <div class="w-12 h-12 rounded-2xl bg-blush-100 flex items-center justify-center text-roseAccent mb-5 group-hover:scale-110 transition-transform">
+                    <i data-lucide="home" class="w-6 h-6"></i>
+                </div>
+                <span class="text-xs font-semibold text-warmGold uppercase tracking-wider">Milestone 02</span>
+                <h3 class="font-serif text-xl sm:text-2xl font-semibold text-gray-800 mt-1 mb-3">Our Happy Little World</h3>
+                <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    Step by step, we are building that peaceful little haven we always dreamed about. A world made of our inside jokes, warm hugs after long days, and quiet evenings together.
+                </p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-roseAccent font-medium">
+                    <span>Our sanctuary</span>
+                    <i data-lucide="sparkles" class="w-4 h-4 text-warmGold"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 sm:p-8 glass-card-hover relative overflow-hidden group">
+                <div class="w-12 h-12 rounded-2xl bg-blush-100 flex items-center justify-center text-roseAccent mb-5 group-hover:scale-110 transition-transform">
+                    <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <span class="text-xs font-semibold text-warmGold uppercase tracking-wider">Milestone 03</span>
+                <h3 class="font-serif text-xl sm:text-2xl font-semibold text-gray-800 mt-1 mb-3">I See Your Hard Work</h3>
+                <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    I see how tirelessly you work for our comfort and future. Please know that even the little things you think go unnoticed are deeply cherished and appreciated by me every day.
+                </p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-roseAccent font-medium">
+                    <span>My hero & strength</span>
+                    <i data-lucide="smile" class="w-4 h-4"></i>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 sm:p-8 glass-card-hover relative overflow-hidden group">
+                <div class="w-12 h-12 rounded-2xl bg-blush-100 flex items-center justify-center text-roseAccent mb-5 group-hover:scale-110 transition-transform">
+                    <i data-lucide="sun-medium" class="w-6 h-6"></i>
+                </div>
+                <span class="text-xs font-semibold text-warmGold uppercase tracking-wider">Milestone 04</span>
+                <h3 class="font-serif text-xl sm:text-2xl font-semibold text-gray-800 mt-1 mb-3">Growing Old Hand in Hand</h3>
+                <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    We learn to accept each other's flaws with kindness and patience. My prayer is for us to grow old together, celebrating every milestone life has waiting for us.
+                </p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-roseAccent font-medium">
+                    <span>Forever & always</span>
+                    <i data-lucide="infinity" class="w-4 h-4"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: ALL 9 VOUCHERS -->
+    <section class="py-20 px-4 sm:px-6 bg-blush-50/50 border-y border-blush-100 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center space-y-3 mb-12">
+                <div class="inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest text-roseAccent font-semibold bg-white px-3 py-1 rounded-full shadow-sm">
+                    <i data-lucide="gift" class="w-3.5 h-3.5"></i>
+                    <span>Special Wife Vouchers</span>
+                </div>
+                <h2 class="font-serif text-3xl sm:text-4xl font-semibold text-gray-800">Your Birthday Coupon Book</h2>
+                <p class="font-handwriting text-2xl text-gray-600">"9 special passes redeemable via WhatsApp directly to Hani ♡"</p>
+            </div>
+
+            <!-- Grid of 9 Coupons -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="couponGrid">
+                
+                <!-- Coupon 1 -->
+                <div id="coupon-1" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-1" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">No Expiration</span>
+                            <i data-lucide="heart-handshake" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">Unlimited Long Warm Hugs</h4>
+                        <p class="text-xs text-gray-500 mt-1">Valid whenever you feel tired, stressed, or just want to be held close.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-1" onclick="redeemCoupon(1, 'Unlimited Long Warm Hugs 🫂')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 2 -->
+                <div id="coupon-2" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-2" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Chef Hani Special</span>
+                            <i data-lucide="utensils" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">Favorite Meal Cooked with Love</h4>
+                        <p class="text-xs text-gray-500 mt-1">Name any dish you're craving and I will cook it specially for you.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-2" onclick="redeemCoupon(2, 'Favorite Meal Cooked with Love 🍲')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 3 -->
+                <div id="coupon-3" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-3" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Movie Night</span>
+                            <i data-lucide="tv" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">100% Movie Choice Right</h4>
+                        <p class="text-xs text-gray-500 mt-1">You choose the show/movie tonight with zero complaints and extra snacks!</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-3" onclick="redeemCoupon(3, '100% Movie Choice Right 🎬')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 4 -->
+                <div id="coupon-4" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-4" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Relaxation</span>
+                            <i data-lucide="smile-plus" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">Head & Shoulder Massage</h4>
+                        <p class="text-xs text-gray-500 mt-1">15 minutes of cozy massage after a tiring day of hard work.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-4" onclick="redeemCoupon(4, 'Head & Shoulder Massage 💆‍♂️')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 5 -->
+                <div id="coupon-5" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-5" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Aisy's Pass</span>
+                            <i data-lucide="shield" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">"Hani Won't Get Mad" Pass</h4>
+                        <p class="text-xs text-gray-500 mt-1">One free pass to get out of minor silly troubles with a cute kiss.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-5" onclick="redeemCoupon(5, 'Hani Won’t Get Mad Pass 🤍')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 6 -->
+                <div id="coupon-6" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-6" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Affection</span>
+                            <i data-lucide="heart-pulse" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">A Million Kisses & Attention</h4>
+                        <p class="text-xs text-gray-500 mt-1">Guaranteed undivided affection, cuddles, and sweet whispers anytime.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-6" onclick="redeemCoupon(6, 'A Million Kisses & Attention 😘')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 7 -->
+                <div id="coupon-7" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-7" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Recharge</span>
+                            <i data-lucide="coffee" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">Ultimate Me-Time Pass</h4>
+                        <p class="text-xs text-gray-500 mt-1">Uninterrupted gaming or quiet chill time with your favorite drink prepared.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-7" onclick="redeemCoupon(7, 'Ultimate Me-Time Pass 🎮')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 8 -->
+                <div id="coupon-8" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-8" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Special Gift</span>
+                            <i data-lucide="gift" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">Jakarta Gift Claim Ticket</h4>
+                        <p class="text-xs text-gray-500 mt-1">Claim your special surprise gift from our trip to Jakarta!</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-8" onclick="redeemCoupon(8, 'Jakarta Gift Claim Ticket 🎁')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coupon 9 -->
+                <div id="coupon-9" class="bg-white rounded-2xl p-5 border-2 border-dashed border-blush-200 relative shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span id="badge-9" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blush-100 text-roseAccent">Support</span>
+                            <i data-lucide="heart" class="w-5 h-5 text-roseAccent"></i>
+                        </div>
+                        <h4 class="font-serif text-lg font-semibold text-gray-800">A Shoulder to Rely On</h4>
+                        <p class="text-xs text-gray-500 mt-1">Whenever life gets heavy, Hani is here to listen and comfort you unconditionally.</p>
+                    </div>
+                    <div class="mt-5 space-y-2">
+                        <button id="btn-9" onclick="redeemCoupon(9, 'A Shoulder to Rely On 🤝')" class="w-full py-2 bg-roseAccent hover:bg-deepRose text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Redeem via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: INTERACTIVE LOVE BUTTON -->
+    <section class="py-16 px-4 text-center max-w-2xl mx-auto">
+        <div class="glass-card rounded-3xl p-8 sm:p-12 space-y-6 relative overflow-hidden">
+            <div class="w-16 h-16 rounded-full bg-blush-100 mx-auto flex items-center justify-center text-roseAccent">
+                <i data-lucide="heart" class="w-8 h-8 fill-roseAccent animate-pulse"></i>
+            </div>
+            <h2 class="font-serif text-3xl font-semibold text-gray-800">Get Hani’s Extra Love</h2>
+            <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                Click the heart below to get love sent directly to Aisy’s heart! Every tap brings a gentle reminder of how much you are cherished by your lovely wife &lt;3
+            </p>
+            <div class="pt-2">
+                <button id="sendLoveBtn" onclick="sendLoveEffect(event)" class="relative group px-8 py-4 bg-gradient-to-r from-roseAccent to-deepRose text-white font-medium rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center space-x-3 mx-auto">
+                    <i data-lucide="heart" class="w-5 h-5 fill-white group-hover:scale-125 transition-transform"></i>
+                    <span class="text-base font-semibold">Tap to Receive Love ♡</span>
+                    <span id="loveCounter" class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full ml-1">0</span>
+                </button>
+            </div>
+            <p id="loveSubtext" class="text-xs text-roseAccent font-medium h-4 transition-all opacity-0">
+                You've received extra hugs and kisses!
+            </p>
+        </div>
+    </section>
+
+    <!-- SECTION 4: MINI GAME - CATCH HANI'S HEARTS -->
+    <section class="py-16 px-4 sm:px-6 max-w-3xl mx-auto">
+        <div class="glass-card rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
+            <div class="inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest text-roseAccent font-semibold bg-blush-100/60 px-3 py-1 rounded-full mb-3">
+                <i data-lucide="gamepad-2" class="w-3.5 h-3.5"></i>
+                <span>Mini Surprise Game</span>
+            </div>
+            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-gray-800 mb-2">Catch Hani’s Hearts ♡</h2>
+            <p class="text-gray-600 text-xs sm:text-sm max-w-md mx-auto mb-6">
+                Catch as many falling hearts as you can before time runs out to collect virtual kisses from your wifey!
+            </p>
+
+            <!-- Game Dashboard -->
+            <div class="flex justify-between items-center bg-white/80 rounded-2xl p-4 mb-4 border border-blush-100 shadow-sm text-sm font-medium">
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-500">Score:</span>
+                    <span id="gameScore" class="font-bold text-roseAccent text-lg">0</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-500">Time:</span>
+                    <span id="gameTimer" class="font-bold text-deepRose text-lg">30s</span>
+                </div>
+            </div>
+
+            <!-- Game Canvas Container -->
+            <div class="relative w-full h-[320px] bg-gradient-to-b from-blush-50/80 to-white rounded-2xl overflow-hidden border border-blush-200 cursor-crosshair shadow-inner" id="gameContainer">
+                <div id="gameStartOverlay" class="absolute inset-0 bg-cream/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-20 space-y-3">
+                    <div class="w-12 h-12 rounded-full bg-blush-100 flex items-center justify-center text-roseAccent">
+                        <i data-lucide="play" class="w-6 h-6 fill-roseAccent"></i>
+                    </div>
+                    <h3 class="font-serif text-xl font-semibold text-gray-800">Ready to play, Aisy?</h3>
+                    <p class="text-xs text-gray-500 text-center max-w-xs">Tap or click on the falling hearts to collect them!</p>
+                    <button onclick="startMiniGame()" class="px-6 py-2.5 bg-roseAccent text-white hover:bg-deepRose rounded-xl text-sm font-semibold shadow-md transition-all">
+                        Start Game ♡
+                    </button>
+                </div>
+                
+                <div id="gameOverOverlay" class="absolute inset-0 bg-cream/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-20 space-y-3 hidden">
+                    <div class="w-12 h-12 rounded-full bg-warmGold/20 flex items-center justify-center text-warmGold">
+                        <i data-lucide="trophy" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-serif text-xl font-semibold text-gray-800">Game Over!</h3>
+                    <p id="finalScoreText" class="text-sm font-medium text-roseAccent">You caught 0 hearts!</p>
+                    <p class="text-xs text-gray-500">Hani sends you a million virtual hugs and kisses! 😘</p>
+                    <button onclick="startMiniGame()" class="px-6 py-2.5 bg-roseAccent text-white hover:bg-deepRose rounded-xl text-sm font-semibold shadow-md transition-all">
+                        Play Again 🎮
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-10 text-center text-gray-400 text-xs border-t border-blush-100 bg-cream">
+        <div class="max-w-md mx-auto space-y-2 px-4">
+            <p class="font-romantic text-xl text-roseAccent">Forever & Always, Hani ♡</p>
+            <p>Crafted with endless love for my dearest husband, Aisy.</p>
+        </div>
+    </footer>
+
+    <!-- FULL LETTER MODAL -->
+    <div id="letterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md opacity-0 invisible transition-all duration-300">
+        <div class="modal-content w-full max-w-2xl max-h-[88vh] bg-[#FFFDF9] rounded-3xl shadow-2xl border border-blush-200 flex flex-col overflow-hidden relative">
+            <div class="p-5 sm:p-6 border-b border-blush-100 flex items-center justify-between bg-blush-50/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blush-100 flex items-center justify-center text-roseAccent">
+                        <i data-lucide="mail-open" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg sm:text-xl font-semibold text-gray-800">Birthday Letter from Wifey</h3>
+                        <p class="text-xs text-gray-500">...to my beloved husband, aisy &lt;3</p>
+                    </div>
+                </div>
+                <button onclick="closeLetterModal()" class="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Letter Body -->
+            <div class="p-6 sm:p-10 overflow-y-auto font-serif text-gray-700 leading-relaxed text-sm sm:text-base space-y-5 bg-[#FFFDF9]" id="letterContainer">
+                <div class="text-right font-handwriting text-2xl text-roseAccent mb-2">
+                    for my precious aisy ♡
+                </div>
+                
+                <!-- Cute Letter Photo Frame (Hidden in PDF export) -->
+                <div class="letter-photo-frame my-6 mx-auto max-w-xs bg-white p-3 rounded-2xl shadow-md border border-blush-200 transform rotate-1 hover:rotate-0 transition-transform">
+                    <div class="w-full h-48 sm:h-56 rounded-xl overflow-hidden bg-blush-50 relative">
+                        <!-- Replace src with your favorite photo URL anytime -->
+                        <img <a href="https://imagepaste.org/v/rdvb3bp9.jpg"><img src="https://imagepaste.org/i/rdvb3bp9.jpg" alt="Shared image" /></a>
+<p>Shared via <a href="https://imagepaste.org">imagepaste.org</a></p> alt="Hani & Aisy" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/F5D0D0/8B3A4B?text=Our+Memory+♡'">
+                    </div>
+                    <p class="font-handwriting text-center text-roseAccent text-lg mt-2"> ⋆ ˚｡⋆୨୧˚ our little sidequest ˚ ୨୧⋆｡˚⋆</p>
+                </div>
+
+                <p>dear aisy,</p>
+                <p>to my loveliest and strongest husband, happy birthday! may you always be blessed with happiness, good health and everything beautiful in life.</p>
+                <p>this is your first birthday after we got married, and only God knows how happy i am to celebrate this special day beside you, this time as your wife. aisy, i’m sorry that i can’t afford to do much other than what i’ve managed to prepare for you today. it’s something i thought could make you happy, and i genuinely hope you enjoyed the food and everything else. it’s not much, but it’s all from my heart. :)</p>
+                <p>aisy, i love you, and nothing can ever change that. a million times over, i’d still choose you. i hope we can have a happy marriage together, both you and me. we’re going to create a happy little world of our own someday, just like we’ve always dreamed of.</p>
+                <p>i know you’re trying your best for us. i know how hard you’re working for the sake of our comfort and future. i see your efforts, aisy, and i hope you know that i appreciate everything you do, even the little things that you might think go unnoticed.</p>
+                <p>throughout this journey, we’ve had lots of ups and downs, cries and laughter, good days and difficult days. but i guess that’s the beauty of love, isn’t it? we learn to accept each other’s flaws and weaknesses because we’re not perfect, and neither is our relationship. what matters is that we keep trying, keep understanding each other and keep choosing one another. i hope we never stop doing that.</p>
+                <p>sometimes, when i think about everything we’ve been through, i can’t help but wonder how we ended up here. all the little moments, the unexpected turns and everything that happened along the way, just so the world could bring us together and intertwine our lives. perhaps we were always meant to find each other.</p>
+                <p>aisy, one of my biggest prayers is for God to grant you a long, healthy and happy life. i pray that He protects you wherever you go, keeps you safe from harm and always watches over you, especially when i’m not around. you know how worried i get every time you go out. sometimes, i get scared just thinking about the possibility of losing you. i’m afraid of a life where i no longer get to see you, hug you, annoy you or simply have you around. i know that everything is in God’s hands, and all i can do is pray that He keeps you safe and stays by your side at all times.</p>
+                <p>i pray that we’re given a long life together. i want us to grow old together, experience everything we’ve been dreaming of and witness all the little milestones that are yet to come. i hope we get to spend as many years together as God allows us to. and if there’s one thing i wish for, it’s that we never have to experience the pain of losing one another too soon. i can’t imagine having to live without you, and i wouldn’t want you to ever have to go through that kind of pain either.</p>
+                <p>and aisy, please look at me as your precious wife, just as i look at you as my precious husband. i want to feel loved by you, too. i want your love, your attention and your affection, just as much as i’m always trying to pour mine into you. sometimes, i miss you even when you’re right beside me. i don’t know how to explain it, but i just want to be close to you. i want your hugs, your kisses, your attention and all those little things that remind me i’m loved by you. let’s never get too comfortable with each other that we forget to show how much we love one another.</p>
+                <p>let’s also learn to be kinder to ourselves and to the people around us. let’s be patient with each other, understand each other better and give each other room to grow. we’re still learning how to be husband and wife, and there’s so much more for us to experience together. i hope we continue growing as individuals while building a beautiful marriage along the way.</p>
+                <p>i want to be with you forever, and i hope you do too. let’s keep dreaming about the future we’ve always wanted, where we get to live peacefully and happily, in our own little world. i want to grow old with you, hold your hand through everything and still be just as excited to come home to you after all these years.</p>
+                <p>happy birthday once again, my love. i pray that life treats you kindly, that your dreams slowly become reality and that you always have reasons to smile. whatever happens along the way, i hope we never forget that we’re in this together.</p>
+                <p class="pt-2 font-medium">i love you, aisy. a million times, i’d choose you. always.</p>
+                <div class="pt-6 text-right space-y-1 font-handwriting text-2xl text-roseAccent">
+                    <p>love,</p>
+                    <p class="text-3xl font-bold">your wife ♡</p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-blush-100 bg-blush-50/30 flex flex-wrap justify-between items-center text-xs text-gray-500 gap-2">
+                <span class="flex items-center space-x-1">
+                    <i data-lucide="heart" class="w-3.5 h-3.5 fill-roseAccent text-roseAccent"></i>
+                    <span>Written with all my heart</span>
+                </span>
+                <div class="flex items-center space-x-2">
+                    <button onclick="downloadLetterAsPDF()" class="px-3 py-1.5 bg-white border border-blush-200 text-roseAccent hover:bg-blush-50 rounded-xl transition-colors font-medium flex items-center space-x-1.5 shadow-sm">
+                        <i data-lucide="file-down" class="w-3.5 h-3.5"></i>
+                        <span>Download PDF 📄</span>
+                    </button>
+                    <button onclick="triggerConfettiModal()" class="px-3 py-1.5 bg-roseAccent text-white hover:bg-deepRose rounded-xl transition-colors font-medium flex items-center space-x-1 shadow-sm">
+                        <span>Celebrate ♡</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="https://mp3tourl.com/audio/1793538986476-62f894a1-369e-46c9-a612-f4396b4d33d1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- JAVASCRIPT CODE -->
+    <script>
+        lucide.createIcons();
+
+        // Load redeemed coupons state from localStorage on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 1; i <= 9; i++) {
+                if (localStorage.getItem(`coupon_${i}_redeemed`) === 'true') {
+                    markCouponAsRedeemed(i);
+                }
+            }
+        });
+
+        // WhatsApp Voucher Redemption Logic (One-time use)
+        function redeemCoupon(id, couponTitle) {
+            // Check if already redeemed
+            if (localStorage.getItem(`coupon_${id}_redeemed`) === 'true') {
+                showToast(`You already redeemed this coupon, sayang! 🤭`);
+                return;
+            }
+
+            // Mark as redeemed in storage
+            localStorage.setItem(`coupon_${id}_redeemed`, 'true');
+            markCouponAsRedeemed(id);
+
+            const phoneNumber = "60137518535";
+            const message = encodeURIComponent(`Hi wifey! ♡ I'd like to redeem my birthday voucher:\n\n🎟️ *${couponTitle}*\n\nPlease process my request! 🥹❤️`);
+            
+            // Opens WhatsApp link directly to your phone number
+            window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`, '_blank');
+            showToast(`Redeeming "${couponTitle}" on WhatsApp! 📱`);
+        }
+
+        function markCouponAsRedeemed(id) {
+            const card = document.getElementById(`coupon-${id}`);
+            const btn = document.getElementById(`btn-${id}`);
+            const badge = document.getElementById(`badge-${id}`);
+
+            if (card && btn && badge) {
+                card.style.opacity = '0.75';
+                card.style.background = '#FAF6F0';
+                card.style.borderColor = '#E2C2B3';
+                
+                badge.innerText = "Redeemed ♡";
+                badge.className = "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-200 text-gray-600";
+
+                btn.disabled = true;
+                btn.className = "w-full py-2 bg-gray-300 text-gray-500 font-medium text-xs rounded-xl cursor-not-allowed flex items-center justify-center space-x-1";
+                btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i><span>Already Redeemed</span>`;
+                lucide.createIcons();
+            }
+        }
+
+        // Canvas Particle Effect
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 12 + 8;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.rotation = Math.random() * 360;
+                this.rotSpeed = Math.random() * 0.02 - 0.01;
+                this.color = Math.random() > 0.4 ? '#E25582' : '#C86D7B';
+                this.type = Math.random() > 0.3 ? 'heart' : 'star';
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotSpeed;
+                if (this.y < -30) this.reset();
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+
+                if (this.type === 'heart') {
+                    ctx.beginPath();
+                    const topCurveHeight = this.size * 0.3;
+                    ctx.moveTo(0, topCurveHeight);
+                    ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                    ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                    ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                    ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    for (let i = 0; i < 4; i++) {
+                        ctx.lineTo(Math.cos((18 + i * 90) * Math.PI / 180) * this.size * 0.5, Math.sin((18 + i * 90) * Math.PI / 180) * this.size * 0.5);
+                        ctx.lineTo(Math.cos((54 + i * 90) * Math.PI / 180) * this.size * 0.2, Math.sin((54 + i * 90) * Math.PI / 180) * this.size * 0.2);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 25; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Modal Logic
+        function openLetterModal() {
+            const modal = document.getElementById('letterModal');
+            const envelope = document.getElementById('heroEnvelope');
+            envelope.classList.add('open');
+            setTimeout(() => {
+                modal.classList.add('active');
+                triggerConfettiModal();
+            }, 400);
+        }
+
+        function closeLetterModal() {
+            const modal = document.getElementById('letterModal');
+            const envelope = document.getElementById('heroEnvelope');
+            modal.classList.remove('active');
+            setTimeout(() => { envelope.classList.remove('open'); }, 300);
+        }
+
+        function triggerConfettiModal() {
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.6 },
+                colors: ['#E25582', '#FBB6CE', '#D4AF37', '#FFF5F5']
+            });
+        }
+
+        // Download Printable Letter / PDF Generation
+        function downloadLetterAsPDF() {
+            const element = document.getElementById('letterContainer');
+            showToast("Generating mobile-friendly PDF... 📄");
+
+            // Clone container with clean mobile/tablet responsive layout formatting
+            const pdfWrapper = document.createElement('div');
+            pdfWrapper.style.padding = '20px 16px';
+            pdfWrapper.style.backgroundColor = '#FFFDF9';
+            pdfWrapper.style.color = '#4A3E3D';
+            pdfWrapper.style.fontFamily = "'Playfair Display', Georgia, serif";
+            pdfWrapper.style.fontSize = '12px';
+            pdfWrapper.style.lineHeight = '1.75';
+            pdfWrapper.style.width = '100%';
+            pdfWrapper.style.boxSizing = 'border-box';
+
+            // Add CSS rules to strictly avoid cutting text/words at page boundaries
+            const style = document.createElement('style');
+            style.innerHTML = `
+                * { box-sizing: border-box; }
+                p { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 12px; text-align: left; word-break: break-word; }
+                .pdf-header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #E8D3C5; padding-bottom: 12px; page-break-inside: avoid; }
+                .pdf-signature { page-break-inside: avoid !important; break-inside: avoid !important; margin-top: 24px; text-align: right; }
+            `;
+            pdfWrapper.appendChild(style);
+
+            // Add Cute Header
+            const header = document.createElement('div');
+            header.className = 'pdf-header';
+            header.innerHTML = `
+                <h1 style="font-size: 20px; color: #8B3A4B; margin: 0; font-family: 'Playfair Display', serif;">Happy Birthday, My Dearest Aisy</h1>
+                <p style="font-size: 12px; color: #C86D7B; margin: 4px 0 0 0; text-align: center;">A Birthday Letter From Your Wife ♡</p>
+            `;
+            pdfWrapper.appendChild(header);
+
+            // Clone letter content and strip out the photo frame for a neat text-only PDF
+            const contentClone = element.cloneNode(true);
+            const photoFrame = contentClone.querySelector('.letter-photo-frame');
+            if (photoFrame) {
+                photoFrame.remove();
+            }
+
+            contentClone.style.overflow = 'visible';
+            contentClone.style.maxHeight = 'none';
+            contentClone.style.padding = '0';
+            contentClone.style.background = 'transparent';
+            
+            pdfWrapper.appendChild(contentClone);
+
+            // Configure html2pdf to fit tightly without side clippings
+            const opt = {
+                margin:       [0.3, 0.3, 0.3, 0.3],
+                filename:     'Happy_Birthday_Letter_For_Aisy.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollX: 0, scrollY: 0 },
+                jsPDF:        { unit: 'in', format: [4.5, 9.5], orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            html2pdf().set(opt).from(pdfWrapper).save().then(() => {
+                showToast("PDF Downloaded successfully! ♡");
+            }).catch(() => {
+                // Fallback printable view tailored for mobile screen printing
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Birthday Letter for Aisy ♡</title>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
+                        <style>
+                            @page { size: auto; margin: 12mm; }
+                            body { font-family: 'Playfair Display', serif; color: #4A3E3D; padding: 15px; max-width: 480px; margin: 0 auto; background: #FFFDF9; line-height: 1.7; font-size: 13px; }
+                            p { margin-bottom: 12px; page-break-inside: avoid; text-align: left; word-wrap: break-word; }
+                            .font-handwriting { font-family: 'Caveat', cursive; font-size: 24px; color: #C86D7B; }
+                            .text-right { text-align: right; }
+                            .text-roseAccent { color: #C86D7B; }
+                            .font-medium { font-weight: 600; }
+                            .pt-2 { padding-top: 8px; }
+                            .pt-6 { padding-top: 20px; page-break-inside: avoid; }
+                            .text-3xl { font-size: 24px; }
+                            .font-bold { font-weight: bold; }
+                            .header { text-align: center; border-bottom: 1px solid #E8D3C5; padding-bottom: 12px; margin-bottom: 20px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h2 style="color: #8B3A4B; margin: 0; font-size: 20px;">Happy Birthday, My Dearest Aisy</h2>
+                            <p style="text-align: center; color: #C86D7B; margin-top: 4px;">A Birthday Letter From Your Wife ♡</p>
+                        </div>
+                        ${element.innerHTML}
+                        <script>
+                            setTimeout(() => { window.print(); }, 500);
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            });
+        }
+
+        // Interactive Heart Counter
+        let loveCount = 0;
+        function sendLoveEffect(e) {
+            loveCount++;
+            document.getElementById('loveCounter').innerText = loveCount;
+            document.getElementById('loveSubtext').style.opacity = '1';
+            
+            const messages = [
+                "Hani loves you lots! ♡",
+                "My favourite person, always! 🥹",
+                "Come here, hubsy! 🫂",
+                "One kiss for my Aisy! 💋",
+                "Still crushing on you! 🤭",
+                "I love being your wife! 💍",
+                "Hani chooses you, always! ❤️",
+                "My handsome husband! 🫣",
+                "Your wifey misses you! 🥺",
+                "More cuddles, please! 🧸",
+                "You're my favourite human! ✨",
+                "Let's grow old together! 🤍",
+                "Aisy makes my world better! 🌷",
+                "Proud of you, sayang! 🫶🏻",
+                "You're stuck with me! HEHE.",
+                "My favourite cuddle buddy! 🫂",
+                "One lifetime, just us! ♡",
+                "May Allah protect you always! 🤲",
+                "Can't wait for our next date! 💗",
+                "Hani is always rooting for you!",
+                "You're my home, Aisy. 🏡",
+                "A million kisses for you! 😘",
+                "More birthdays together, please! 🎂",
+                "I still get butterflies! 🦋",
+                "Thank you for being my husband! 🥹",
+                "Our little world, forever! ✨",
+                "Your wife is very clingy today. 🤭",
+                "Let's make more happy memories! 📸",
+                "I would choose you all over again! ♡",
+                "I love you, Aisy sayang saya! ❤️"
+            ];
+            showToast(messages[Math.floor(Math.random() * messages.length)]);
+
+            const rect = e.target.getBoundingClientRect();
+            confetti({
+                particleCount: 15,
+                spread: 40,
+                origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: (rect.top + rect.height / 2) / window.innerHeight },
+                colors: ['#E25582', '#FBB6CE']
+            });
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto bg-white border border-blush-200 text-gray-800 text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-2 transition-all duration-300 transform translate-y-4 opacity-0 max-w-xs sm:max-w-sm';
+            toast.innerHTML = `<div class="w-2 h-2 rounded-full bg-roseAccent shrink-0"></div><span class="font-medium">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Audio Player Controls
+        let isPlayingMusic = false;
+        const bgAudio = document.getElementById('bgAudio');
+
+        function toggleMusic() {
+            const statusText = document.getElementById('audioStatus');
+            const soundWave = document.getElementById('soundWave');
+
+            if (!isPlayingMusic) {
+                bgAudio.play().then(() => {
+                    statusText.innerText = "Playing Song";
+                    soundWave.classList.remove('hidden');
+                    soundWave.classList.add('flex');
+                    isPlayingMusic = true;
+                    showToast("Playing sweet background song ♡");
+                }).catch(() => {
+                    showToast("Tap anywhere on the screen first ♡");
+                });
+            } else {
+                bgAudio.pause();
+                statusText.innerText = "Play Music";
+                soundWave.classList.add('hidden');
+                soundWave.classList.remove('flex');
+                isPlayingMusic = false;
+            }
+        }
+
+        function autoPlayOnFirstInteraction() {
+            if (!isPlayingMusic) {
+                bgAudio.play().then(() => {
+                    document.getElementById('audioStatus').innerText = "Playing Song";
+                    document.getElementById('soundWave').classList.remove('hidden');
+                    document.getElementById('soundWave').classList.add('flex');
+                    isPlayingMusic = true;
+                    showToast("Welcome! Music started with love ♡");
+                }).catch(() => {});
+            }
+            document.removeEventListener('click', autoPlayOnFirstInteraction);
+            document.removeEventListener('touchstart', autoPlayOnFirstInteraction);
+        }
+
+        document.addEventListener('click', autoPlayOnFirstInteraction);
+        document.addEventListener('touchstart', autoPlayOnFirstInteraction);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLetterModal(); });
+
+        // Mini Game Logic: Catch Hani's Hearts
+        let gameScore = 0;
+        let timeLeft = 30;
+        let gameInterval = null;
+        let spawnerInterval = null;
+        let isGameRunning = false;
+
+        // Cute Web Audio API chime for catching hearts
+        function playCatchSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                // Sweet ascending pitch for catching hearts
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.15);
+            } catch (e) {
+                // AudioContext not allowed or supported without user gesture; safely ignore
+            }
+        }
+
+        function startMiniGame() {
+            const startOverlay = document.getElementById('gameStartOverlay');
+            const overOverlay = document.getElementById('gameOverOverlay');
+            const container = document.getElementById('gameContainer');
+
+            startOverlay.classList.add('hidden');
+            overOverlay.classList.add('hidden');
+
+            // Clear any existing active hearts
+            const existingHearts = container.querySelectorAll('.falling-heart');
+            existingHearts.forEach(h => h.remove());
+
+            gameScore = 0;
+            timeLeft = 30;
+            isGameRunning = true;
+            document.getElementById('gameScore').innerText = gameScore;
+            document.getElementById('gameTimer').innerText = timeLeft + 's';
+
+            // Timer countdown
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('gameTimer').innerText = timeLeft + 's';
+                if (timeLeft <= 0) {
+                    endMiniGame();
+                }
+            }, 1000);
+
+            // Spawner
+            if (spawnerInterval) clearInterval(spawnerInterval);
+            spawnerInterval = setInterval(() => {
+                if (isGameRunning) spawnHeart();
+            }, 600);
+        }
+
+        function spawnHeart() {
+            const container = document.getElementById('gameContainer');
+            const heart = document.createElement('div');
+            // Added larger padding/touch area to make it super sensitive and easy to tap on mobile
+            heart.className = 'falling-heart absolute cursor-pointer select-none p-3 -m-3 flex items-center justify-center transition-transform active:scale-125';
+            
+            const emojis = ['❤️', '💖', '💌', '💋', '🧸', '✨'];
+            
+            const innerSpan = document.createElement('span');
+            innerSpan.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            innerSpan.style.fontSize = (Math.random() * 10 + 24) + 'px';
+            heart.appendChild(innerSpan);
+            
+            const containerWidth = container.clientWidth - 50;
+            const randomX = Math.floor(Math.random() * containerWidth);
+            
+            heart.style.left = randomX + 'px';
+            heart.style.bottom = '-40px';
+            heart.style.transition = 'bottom 2.2s linear';
+
+            // Use pointerdown for immediate response on both mobile touch screens and desktop clicks
+            const handleCatch = (e) => {
+                e.stopPropagation();
+                if (!isGameRunning) return;
+                
+                // Prevent duplicate taps on the same heart element
+                if (heart.dataset.caught === "true") return;
+                heart.dataset.caught = "true";
+
+                gameScore++;
+                document.getElementById('gameScore').innerText = gameScore;
+                playCatchSound(); // Play cute pop chime
+                
+                // Pop animation & disappear instantly
+                heart.style.transform = 'scale(1.8)';
+                heart.style.opacity = '0';
+                setTimeout(() => heart.remove(), 150);
+            };
+
+            heart.addEventListener('pointerdown', handleCatch);
+            heart.addEventListener('click', handleCatch);
+
+            container.appendChild(heart);
+
+            // Trigger fall
+            setTimeout(() => {
+                if (heart.parentElement) {
+                    heart.style.bottom = (container.clientHeight + 40) + 'px';
+                }
+            }, 50);
+
+            // Cleanup after animation
+            setTimeout(() => {
+                if (heart.parentElement) heart.remove();
+            }, 2300);
+        }
+
+        function endMiniGame() {
+            isGameRunning = false;
+            clearInterval(gameInterval);
+            clearInterval(spawnerInterval);
+
+            const container = document.getElementById('gameContainer');
+            const existingHearts = container.querySelectorAll('.falling-heart');
+            existingHearts.forEach(h => h.remove());
+
+            document.getElementById('finalScoreText').innerText = `You caught ${gameScore} hearts! ♡`;
+            document.getElementById('gameOverOverlay').classList.remove('hidden');
+
+            if (gameScore >= 15) {
+                confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
+            }
+        }
+    </script>
+</body>
+</html>
